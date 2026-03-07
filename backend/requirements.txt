@@ -1,0 +1,30 @@
+# Core Framework
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+
+# Database
+SQLAlchemy
+alembic
+psycopg2-binary
+
+# AWS Services
+boto3
+botocore
+
+# Authentication & Security
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+
+# Testing
+pytest
+pytest-asyncio
+pytest-cov
+httpx
+
+# Utilities
+python-dotenv
+redis
+
