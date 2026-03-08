@@ -59,7 +59,7 @@ backend/
 ## Requirements
 
 - Python 3.11+
-- PostgreSQL 14+
+- MySQL 8.0+
 - Redis 6+
 - AWS account
 

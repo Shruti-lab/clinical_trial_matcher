@@ -7,7 +7,7 @@ This is the backend service for the Clinical Trial Matcher platform, an AI-power
 ## Technology Stack
 
 - **Framework:** FastAPI
-- **Database:** PostgreSQL with SQLAlchemy ORM
+- **Database:** MySQL with SQLAlchemy ORM
 - **Cloud Services:** AWS (S3, Textract, Comprehend Medical, Bedrock)
 - **Caching:** Redis
 - **Testing:** pytest
@@ -34,7 +34,7 @@ backend/
 ### Prerequisites
 
 - Python 3.11 or higher
-- PostgreSQL 14+
+- MySQL 8.0+
 - Redis 6+
 - AWS account with appropriate credentials
 

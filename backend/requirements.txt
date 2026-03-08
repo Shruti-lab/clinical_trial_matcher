@@ -7,7 +7,8 @@ pydantic-settings
 # Database
 SQLAlchemy
 alembic
-psycopg2-binary
+PyMySQL
+cryptography
 
 # AWS Services
 boto3

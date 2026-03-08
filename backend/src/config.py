@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     debug: bool = False
     
     # Database
-    database_url: str = "postgresql://user:password@localhost:5432/trialmatch"
+    database_url: str = "mysql+pymysql://user:password@localhost:3306/trialmatch"
     
     # AWS
     aws_region: str = "us-east-1"

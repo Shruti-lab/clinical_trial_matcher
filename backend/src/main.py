@@ -3,6 +3,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from .api.documents import router as documents_router
+
 app = FastAPI(
     title="Clinical Trial Matcher API",
     description="AI-powered platform for matching patients with clinical trials",
@@ -17,6 +19,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include API routers
+app.include_router(documents_router, prefix="/api/v1")
 
 
 @app.get("/")

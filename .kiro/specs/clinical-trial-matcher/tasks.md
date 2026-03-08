@@ -16,7 +16,7 @@
   - Configure TypeScript and ESLint
   - **References:** Design Section 2.1, Requirements FR-6
 
-- [ ] 1.3 Set up development environment configuration
+- [x] 1.3 Set up development environment configuration
   - Create .env.example files for backend and frontend
   - Configure environment variables for AWS services
   - Set up local development Docker Compose (PostgreSQL, Redis, LocalStack)
@@ -24,14 +24,14 @@
   - **References:** Design Section 6
 
 ### 2. Database Setup
-- [ ] 2.1 Design and implement database schema
+- [x] 2.1 Design and implement database schema
   - Create SQLAlchemy models for User, MedicalProfile, Document, ClinicalTrial, Match
   - Implement database migrations with Alembic
   - Add indexes for frequently queried fields
   - **References:** Design Section 2.3, Requirements FR-4
 
 - [ ] 2.2 Create database seed scripts
-  - Generate 50+ synthetic clinical trials covering 10 major conditions
+  - Generate 30 synthetic clinical trials covering 10 major conditions
   - Create 10 synthetic patient profiles for testing
   - Implement data seeding script
   - **References:** Requirements Section 5.3, Success Metrics
@@ -95,23 +95,26 @@
 ## Phase 3: Document Upload & Processing
 
 ### 5. Document Upload (Backend)
-- [ ] 5.1 Implement S3 document upload
+- [x] 5.1 Implement S3 document upload
   - Create POST /documents endpoint
   - Generate pre-signed S3 URLs
   - Validate file types and sizes (PDF, JPG, PNG, max 10MB)
   - Store document metadata in database
+  - Do not create any testing scripts
   - **References:** Requirements US-1, FR-2, Design Section 2.2.2
 
-- [ ] 5.2 Implement document listing endpoint
+- [x] 5.2 Implement document listing endpoint
   - Create GET /documents endpoint
+  - Do not create any testing scripts
   - Return user's documents with metadata
   - Add pagination support
   - **References:** Design Section 3.1
 
-- [ ] 5.3 Implement document deletion endpoint
+- [x] 5.3 Implement document deletion endpoint
   - Create DELETE /documents/{id} endpoint
   - Remove from S3 and database
   - Add authorization check
+  - Do not create any testing scripts
   - **References:** Design Section 3.1
 
 ### 6. Document Processing Pipeline
@@ -120,18 +123,21 @@
   - Extract text from PDF and images
   - Handle multi-page documents
   - Store extracted text in database
+  - Do not create any testing scripts
   - **References:** Requirements US-5, FR-3, Design Section 4.1
 
 - [ ] 6.2 Implement medical entity extraction
   - Integrate Amazon Comprehend Medical
   - Extract conditions, medications, demographics, test results
   - Normalize medical terms and abbreviations
+  - Do not create any testing scripts
   - **References:** Requirements US-5, FR-3, Design Section 4.2
 
 - [ ] 6.3 Create medical profile builder
   - Parse extracted entities into structured format
   - Update MedicalProfile model with extracted data
   - Handle duplicate/conflicting information
+  - Do not create any testing scripts
   - **References:** Requirements US-5, Design Section 2.3.2
 
 - [ ] 6.4 Implement processing status tracking
