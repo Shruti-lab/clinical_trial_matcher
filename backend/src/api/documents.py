@@ -1,6 +1,6 @@
 """Document upload and management API endpoints."""
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List
 import logging
@@ -15,7 +15,9 @@ from ..schemas.document import (
 )
 from ..services.s3_service import s3_service
 from ..services.document_service import document_service
+from ..services.document_processing import process_document_async
 from ..models.document import ProcessingStatus
+from ..config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -230,6 +232,70 @@ async def delete_document(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to delete document"
+        )
+
+
+@router.post("/{document_id}/process")
+async def trigger_document_processing(
+    document_id: str,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+    current_user_id: str = Depends(get_current_user_id)
+):
+    """
+    Trigger document processing after successful upload to S3.
+    This endpoint should be called after the client confirms successful upload.
+    """
+    try:
+        document = document_service.get_document_by_id(
+            db=db,
+            document_id=document_id,
+            user_id=current_user_id
+        )
+        
+        if not document:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Document not found"
+            )
+        
+        if document.processing_status != ProcessingStatus.PENDING:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Document is already {document.processing_status.value}"
+            )
+        
+        # Check if document exists in S3
+        if not s3_service.check_document_exists(document.s3_key):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Document not found in storage. Please upload first."
+            )
+        
+        # Get settings for S3 bucket
+        settings = get_settings()
+        
+        # Trigger background processing
+        background_tasks.add_task(
+            process_document_async,
+            document_id=document.id,
+            s3_bucket=settings.AWS_S3_BUCKET,
+            s3_key=document.s3_key
+        )
+        
+        return {
+            "message": "Document processing started",
+            "document_id": document.id,
+            "status": "processing"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to trigger processing for {document_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to trigger document processing"
         )
 
 

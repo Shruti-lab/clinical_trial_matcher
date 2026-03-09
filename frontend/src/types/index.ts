@@ -8,6 +8,26 @@ export interface User {
   updated_at: string;
 }
 
+// Authentication types
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  phone?: string;
+  password: string;
+  preferred_language: string;
+}
+
+export interface TokenResponse {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+  expires_in: number;
+}
+
 // Medical Profile types
 export interface MedicalProfile {
   id: string;

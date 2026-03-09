@@ -4,6 +4,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .api.documents import router as documents_router
+from .api.auth import router as auth_router
+from .api.trials import router as trials_router
+from .api.matching import router as matching_router
 
 app = FastAPI(
     title="Clinical Trial Matcher API",
@@ -21,7 +24,10 @@ app.add_middleware(
 )
 
 # Include API routers
+app.include_router(auth_router, prefix="/api/v1")
 app.include_router(documents_router, prefix="/api/v1")
+app.include_router(trials_router, prefix="/api/v1")
+app.include_router(matching_router, prefix="/api/v1")
 
 
 @app.get("/")

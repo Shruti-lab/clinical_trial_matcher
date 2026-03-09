@@ -50,7 +50,7 @@ class ClinicalTrial(Base, UUIDMixin, TimestampMixin):
     primary_objective: Mapped[str] = mapped_column(Text, nullable=True)
     secondary_objectives: Mapped[str] = mapped_column(Text, nullable=True)
     
-    # Eligibility criteria (stored as JSON for flexibility)
+    # Eligibility criteria (stored as JSON for flexibility) ie inclusion criteria
     eligibility_criteria: Mapped[Optional[Dict]] = mapped_column(
         JSON, 
         nullable=True,
