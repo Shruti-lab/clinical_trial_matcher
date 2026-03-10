@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, SortAsc, SortDesc, RefreshCw, Heart, Star } from 'lucide-react';
+import { Search, Filter, SortAsc, SortDesc, RefreshCw, Star } from 'lucide-react';
 import TrialCard from '../../components/TrialCard';
 
 interface TrialMatch {

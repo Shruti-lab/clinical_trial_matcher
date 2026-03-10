@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   MapPin,
-  Calendar,
-  Users,
   Heart,
   Phone,
   Mail,
@@ -16,7 +14,6 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  Star
 } from 'lucide-react';
 import apiClient from '../../services/api';
 

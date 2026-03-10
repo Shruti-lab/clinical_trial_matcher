@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, Search, Heart, BarChart3 } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';

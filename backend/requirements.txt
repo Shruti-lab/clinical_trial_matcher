@@ -16,7 +16,6 @@ botocore
 
 # Authentication & Security
 python-jose[cryptography]
-passlib[bcrypt]
 python-multipart
 
 # Testing
@@ -27,5 +26,5 @@ httpx
 
 # Utilities
 python-dotenv
-redis
+
 

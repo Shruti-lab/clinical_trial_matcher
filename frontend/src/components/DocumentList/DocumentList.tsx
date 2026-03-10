@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { File, Download, Trash2, Clock, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import apiClient from '../../services/api';
 
 interface Document {
   id: string;
@@ -31,17 +32,17 @@ const DocumentList: React.FC<DocumentListProps> = ({
       setLoading(true);
       setError(null);
       
-      const response = await fetch('/api/documents');
+      const response = await apiClient.get('/documents');
+      setDocuments(response.data.documents || []);
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch documents');
+    } catch (err: any) {
+      // If it's a 404 or the user has no documents, don't show an error
+      if (err.response?.status === 404) {
+        setDocuments([]);
+        return;
       }
       
-      const data = await response.json();
-      setDocuments(data.documents || []);
-      
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load documents';
+      const errorMessage = err.response?.data?.detail || err.message || 'Failed to load documents';
       setError(errorMessage);
       console.error('Error fetching documents:', err);
     } finally {
@@ -89,6 +90,11 @@ const DocumentList: React.FC<DocumentListProps> = ({
   const handleDownload = async (documentId: string, fileName: string) => {
     try {
       const response = await fetch(`/api/documents/${documentId}/download`);
+      if(fileName==""){
+
+
+      }
+      
       
       if (!response.ok) {
         throw new Error('Failed to get download URL');
@@ -203,7 +209,7 @@ const DocumentList: React.FC<DocumentListProps> = ({
     return (
       <div className="text-center py-8">
         <File className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No documents uploaded</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">No documents uploaded yet</h3>
         <p className="text-gray-500">
           Upload your first medical document to get started with trial matching.
         </p>

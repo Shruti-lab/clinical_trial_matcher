@@ -1,27 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import apiClient from '../../services/api';
+import { useAuthStore } from '../../stores/authStore';
 
 interface LoginForm {
   email: string;
   password: string;
 }
 
-interface LoginError {
-  message: string;
-  field?: string;
-}
-
 const Login = () => {
   const navigate = useNavigate();
+  const { login, isLoading, error, clearError } = useAuthStore();
+  
   const [formData, setFormData] = useState<LoginForm>({
     email: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<LoginError | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -29,17 +25,18 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
-    if (error) setError(null);
+    // Clear errors when user starts typing
+    if (validationError) setValidationError(null);
+    if (error) clearError();
   };
 
   const validateForm = (): boolean => {
     if (!formData.email) {
-      setError({ message: 'Email is required', field: 'email' });
+      setValidationError('Email is required');
       return false;
     }
     if (!formData.password) {
-      setError({ message: 'Password is required', field: 'password' });
+      setValidationError('Password is required');
       return false;
     }
     return true;
@@ -50,28 +47,17 @@ const Login = () => {
     
     if (!validateForm()) return;
 
-    setLoading(true);
-    setError(null);
-
     try {
-      const response = await apiClient.post('/auth/login', formData);
-      const { access_token, refresh_token } = response.data;
-
-      // Store tokens
-      localStorage.setItem('auth_token', access_token);
-      localStorage.setItem('refresh_token', refresh_token);
-
-      // Redirect to dashboard
+      await login(formData.email, formData.password);
+      // If login is successful, redirect to dashboard
       navigate('/dashboard');
-    } catch (err: any) {
-      console.error('Login error:', err);
-      setError({
-        message: err.response?.data?.detail || 'Login failed. Please try again.'
-      });
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      // Error is handled by the auth store
+      console.error('Login failed:', err);
     }
   };
+
+  const displayError = validationError || error;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -112,7 +98,7 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   className={`appearance-none block w-full pl-10 pr-3 py-2 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                    error?.field === 'email' ? 'border-red-300' : 'border-gray-300'
+                    validationError === 'Email is required' ? 'border-red-300' : 'border-gray-300'
                   }`}
                   placeholder="Enter your email"
                 />
@@ -137,7 +123,7 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   className={`appearance-none block w-full pl-10 pr-10 py-2 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                    error?.field === 'password' ? 'border-red-300' : 'border-gray-300'
+                    validationError === 'Password is required' ? 'border-red-300' : 'border-gray-300'
                   }`}
                   placeholder="Enter your password"
                 />
@@ -156,10 +142,10 @@ const Login = () => {
             </div>
 
             {/* Error Message */}
-            {error && (
+            {displayError && (
               <div className="flex items-center space-x-2 text-red-600 text-sm">
                 <AlertCircle className="h-4 w-4" />
-                <span>{error.message}</span>
+                <span>{displayError}</span>
               </div>
             )}
 
@@ -167,12 +153,12 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={isLoading}
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                  loading ? 'opacity-50 cursor-not-allowed' : ''
+                  isLoading ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                {loading ? (
+                {isLoading ? (
                   <div className="flex items-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                     Signing in...

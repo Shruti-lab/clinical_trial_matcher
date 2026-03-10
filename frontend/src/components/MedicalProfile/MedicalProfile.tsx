@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, Heart, Pill, FileText, Edit3, Save, X, RefreshCw, AlertCircle } from 'lucide-react';
+import apiClient from '../../services/api';
 
 interface MedicalProfile {
   id: string;
@@ -32,23 +33,17 @@ const MedicalProfile: React.FC<MedicalProfileProps> = ({ refreshTrigger = 0 }) =
       setLoading(true);
       setError(null);
       
-      const response = await fetch('/api/profile');
+      const response = await apiClient.get('/profile');
+      setProfile(response.data);
       
-      if (response.status === 404) {
+    } catch (err: any) {
+      if (err.response?.status === 404) {
         // No profile exists yet
         setProfile(null);
         return;
       }
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch medical profile');
-      }
-      
-      const data = await response.json();
-      setProfile(data);
-      
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load profile';
+      const errorMessage = err.response?.data?.detail || err.message || 'Failed to load profile';
       setError(errorMessage);
       console.error('Error fetching profile:', err);
     } finally {
@@ -75,25 +70,13 @@ const MedicalProfile: React.FC<MedicalProfileProps> = ({ refreshTrigger = 0 }) =
     try {
       setSaving(true);
       
-      const response = await fetch('/api/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(editForm)
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to update profile');
-      }
-      
-      const updatedProfile = await response.json();
-      setProfile(updatedProfile);
+      const response = await apiClient.put('/profile', editForm);
+      setProfile(response.data);
       setEditing(false);
       setEditForm({});
       
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to save profile';
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.detail || err.message || 'Failed to save profile';
       alert(`Save failed: ${errorMessage}`);
       console.error('Error saving profile:', err);
     } finally {

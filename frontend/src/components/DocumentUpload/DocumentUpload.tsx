@@ -39,7 +39,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
   };
 
   const uploadFile = async (file: File) => {
-    const uploadId = Date.now().toString();
+    // const uploadId = Date.now().toString();
     
     // Add to uploads list
     const newUpload: UploadProgress = {

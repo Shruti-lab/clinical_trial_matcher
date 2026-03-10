@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Calendar, Users, Heart, ExternalLink, Star } from 'lucide-react';
+import { MapPin, Calendar, Users, Heart, ExternalLink} from 'lucide-react';
 
 interface Trial {
   id: string;

@@ -167,8 +167,15 @@ export const useAuthStore = create<AuthState>()(
         try {
           const response = await apiClient.get('/auth/me');
           
+          // Convert datetime objects to strings for frontend
+          const userData = {
+            ...response.data,
+            created_at: new Date(response.data.created_at).toISOString(),
+            updated_at: new Date(response.data.updated_at).toISOString()
+          };
+          
           set({
-            user: response.data,
+            user: userData,
             isAuthenticated: true,
             error: null
           });
@@ -182,8 +189,16 @@ export const useAuthStore = create<AuthState>()(
               await get().refreshToken();
               // Retry getting user info
               const response = await apiClient.get('/auth/me');
+              
+              // Convert datetime objects to strings for frontend
+              const userData = {
+                ...response.data,
+                created_at: new Date(response.data.created_at).toISOString(),
+                updated_at: new Date(response.data.updated_at).toISOString()
+              };
+              
               set({
-                user: response.data,
+                user: userData,
                 isAuthenticated: true,
                 error: null
               });

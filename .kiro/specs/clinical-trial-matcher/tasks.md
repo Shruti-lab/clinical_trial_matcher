@@ -217,13 +217,13 @@
   - **References:** Requirements US-2, US-3, Design Section 4.4
 
 ### 10. Favorites & Match Management
-- [ ] 10.1 Implement favorites functionality
+- [x] 10.1 Implement favorites functionality
   - Create POST /match/favorite endpoint
   - Create GET /match/favorites endpoint
   - Create DELETE /match/favorite/{id} endpoint
   - **References:** Requirements FR-6, Design Section 3.1
 
-- [ ] 10.2 Implement trial contact tracking
+- [x] 10.2 Implement trial contact tracking
   - Create POST /trials/{id}/contact endpoint
   - Track user interactions with trials
   - Update match status

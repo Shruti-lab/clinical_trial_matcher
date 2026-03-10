@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel, EmailStr, Field, validator
 from typing import Optional
+from datetime import datetime
 import re
 
 
@@ -51,14 +52,16 @@ class TokenRefreshRequest(BaseModel):
     refresh_token: str = Field(..., description="Refresh token")
 
 
+from datetime import datetime
+
 class UserResponse(BaseModel):
     """Response schema for user information."""
     id: str
     email: str
     phone: Optional[str] = None
     preferred_language: str
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True

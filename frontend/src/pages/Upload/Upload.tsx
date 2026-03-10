@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, ArrowRight, CheckCircle } from 'lucide-react';
 import DocumentUpload from '../../components/DocumentUpload';

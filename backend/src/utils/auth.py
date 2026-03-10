@@ -3,23 +3,35 @@
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 import jwt
-from passlib.context import CryptContext
+import hashlib
+import secrets
 from fastapi import HTTPException, status
 
 from ..config import settings
 
-# Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 
 def hash_password(password: str) -> str:
-    """Hash a password using bcrypt."""
-    return pwd_context.hash(password)
+    """Hash a password using SHA-256 with salt."""
+    # Generate a random salt
+    salt = secrets.token_hex(16)
+    # Create hash with salt
+    password_hash = hashlib.sha256((password + salt).encode()).hexdigest()
+    # Return salt + hash combined
+    return f"{salt}:{password_hash}"
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        # Split salt and hash
+        salt, stored_hash = hashed_password.split(':', 1)
+        # Hash the plain password with the stored salt
+        password_hash = hashlib.sha256((plain_password + salt).encode()).hexdigest()
+        # Compare hashes
+        return password_hash == stored_hash
+    except ValueError:
+        # Invalid hash format
+        return False
 
 
 def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
