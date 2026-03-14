@@ -71,9 +71,9 @@ class Match(Base, UUIDMixin, TimestampMixin):
     )
     
     # Contact tracking
-    contact_attempted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
-    contact_method: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
-    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # contact_attempted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    # contact_method: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    # notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="matches")

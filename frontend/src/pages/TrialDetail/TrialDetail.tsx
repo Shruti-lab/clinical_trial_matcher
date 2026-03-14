@@ -21,7 +21,7 @@ interface TrialDetail {
   id: string;
   ctri_id: string;
   title: string;
-  condition: string;
+  condition_name: string;
   phase: string;
   status: string;
   description?: string;
@@ -47,9 +47,8 @@ interface TrialDetail {
   study_type?: string;
   intervention_type?: string;
   target_enrollment?: number;
-  keywords?: string[];
+  keywords?: string;
   source_url?: string;
-  last_updated_source?: string;
   created_at: string;
   updated_at: string;
 }
@@ -249,7 +248,7 @@ const TrialDetail = () => {
                 {/* Status badges */}
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {trial.condition}
+                    {trial.condition_name}
                   </span>
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPhaseColor(trial.phase)}`}>
                     Phase {trial.phase}
@@ -388,16 +387,16 @@ const TrialDetail = () => {
               </div>
 
               {/* Keywords */}
-              {trial.keywords && trial.keywords.length > 0 && (
+              {trial.keywords && trial.keywords.trim() && (
                 <div className="mt-4">
                   <dt className="text-sm font-medium text-gray-500 mb-2">Keywords</dt>
                   <div className="flex flex-wrap gap-2">
-                    {trial.keywords.map((keyword, index) => (
+                    {trial.keywords.split(',').map((keyword, index) => (
                       <span
                         key={index}
                         className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
                       >
-                        {keyword}
+                        {keyword.trim()}
                       </span>
                     ))}
                   </div>

@@ -242,8 +242,8 @@ class TrialMatchingService:
         score = best_score * 100
         
         details = {
-            'met': [f"Condition match: {best_match} → {trial.condition} ({score:.0f}% match)"] if best_match else [],
-            'not_met': [] if score > 30 else [f"Low condition match: {trial.condition}"]
+            'met': [f"Condition match: {best_match} → {trial.condition_name} ({score:.0f}% match)"] if best_match else [],
+            'not_met': [] if score > 30 else [f"Low condition match: {trial.condition_name}"]
         }
         
         return score, details

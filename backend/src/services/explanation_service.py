@@ -77,20 +77,20 @@ class ExplanationService:
         if profile.conditions:
             primary_condition = profile.conditions[0]  # Use first condition as primary
             
-            if trial.condition.lower() in primary_condition.lower() or primary_condition.lower() in trial.condition.lower():
+            if trial.condition_name.lower() in primary_condition.lower() or primary_condition.lower() in trial.condition_name.lower():
                 explanation_parts.append(
-                    f"The trial focuses on {trial.condition.lower()}, which directly relates to your {primary_condition.lower()}."
+                    f"The trial focuses on {trial.condition_name.lower()}, which directly relates to your {primary_condition.lower()}."
                 )
             else:
                 # Check for related conditions
-                related_terms = self._find_related_terms(primary_condition, trial.condition)
+                related_terms = self._find_related_terms(primary_condition, trial.condition_name)
                 if related_terms:
                     explanation_parts.append(
-                        f"The trial studies {trial.condition.lower()}, which may be related to your {primary_condition.lower()} through {related_terms}."
+                        f"The trial studies {trial.condition_name.lower()}, which may be related to your {primary_condition.lower()} through {related_terms}."
                     )
                 else:
                     explanation_parts.append(
-                        f"While the trial focuses on {trial.condition.lower()}, it may still be relevant to your {primary_condition.lower()}."
+                        f"While the trial focuses on {trial.condition_name.lower()}, it may still be relevant to your {primary_condition.lower()}."
                     )
         
         # Eligibility explanation
@@ -225,7 +225,7 @@ class ExplanationService:
         
         Clinical Trial:
         - Title: {trial.title}
-        - Condition: {trial.condition}
+        - Condition: {trial.condition_name}
         - Phase: {trial.phase.value}
         - Location: {trial.location}
         - Description: {trial.description or 'Not provided'}

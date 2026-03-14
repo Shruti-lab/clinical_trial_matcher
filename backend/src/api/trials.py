@@ -1,6 +1,7 @@
 """Clinical trials API endpoints."""
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import status as http_status
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, func
 from typing import List, Optional
@@ -91,7 +92,7 @@ async def search_trials(
     except Exception as e:
         logger.error(f"Failed to search trials: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to search clinical trials"
         )
 
@@ -109,7 +110,7 @@ async def get_trial_by_id(
         
         if not trial:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
+                status_code=http_status.HTTP_404_NOT_FOUND,
                 detail="Clinical trial not found"
             )
         
@@ -120,7 +121,7 @@ async def get_trial_by_id(
     except Exception as e:
         logger.error(f"Failed to get trial {trial_id}: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve clinical trial"
         )
 
@@ -169,7 +170,7 @@ async def get_nearby_trials(
         
         # Add condition filter if provided
         if condition:
-            query = query.filter(ClinicalTrial.condition.ilike(f"%{condition}%"))
+            query = query.filter(ClinicalTrial.condition_name.ilike(f"%{condition}%"))
         
         # Filter by radius and sort by distance
         results = query.having(distance <= radius_km).order_by(distance).limit(limit).all()
@@ -194,7 +195,7 @@ async def get_nearby_trials(
     except Exception as e:
         logger.error(f"Failed to find nearby trials: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to find nearby clinical trials"
         )
 
@@ -223,7 +224,7 @@ async def autocomplete_conditions(
     except Exception as e:
         logger.error(f"Failed to get condition autocomplete: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to get condition suggestions"
         )
 
@@ -242,7 +243,7 @@ async def contact_trial(
         
         if not trial:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
+                status_code=http_status.HTTP_404_NOT_FOUND,
                 detail="Clinical trial not found"
             )
         
@@ -264,6 +265,6 @@ async def contact_trial(
     except Exception as e:
         logger.error(f"Failed to get contact info for trial {trial_id}: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to get trial contact information"
         )

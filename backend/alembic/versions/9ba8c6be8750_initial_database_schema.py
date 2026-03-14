@@ -130,7 +130,6 @@ def upgrade() -> None:
         sa.Column('target_enrollment', sa.Integer(), nullable=True),
         sa.Column('keywords', sa.JSON(), nullable=True, comment='Keywords for search and matching'),
         sa.Column('source_url', sa.String(500), nullable=True),
-        sa.Column('last_updated_source', sa.Date(), nullable=True),
         sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('NOW()'), nullable=False),
         sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('NOW() ON UPDATE NOW()'), nullable=False),
         sa.PrimaryKeyConstraint('id'),

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, ChevronDown } from 'lucide-react';
 import TrialCard from '../../components/TrialCard';
+import apiClient from '../../services/api';
 
 interface Trial {
   id: string;
@@ -62,12 +63,9 @@ const Trials: React.FC = () => {
       if (filters.max_age) params.append('max_age', filters.max_age.toString());
       if (filters.gender) params.append('gender', filters.gender);
 
-      const response = await fetch(`/api/trials?${params}`);
-      if (!response.ok) throw new Error('Failed to search trials');
-
-      const data = await response.json();
-      setTrials(data.trials || []);
-      setTotalPages(data.total_pages || 1);
+      const response = await apiClient.get(`/trials?${params}`);
+      setTrials(response.data.trials || []);
+      setTotalPages(response.data.total_pages || 1);
       if (resetPage) setPage(1);
     } catch (error) {
       console.error('Search error:', error);
@@ -84,11 +82,8 @@ const Trials: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`/api/trials/conditions/autocomplete?q=${encodeURIComponent(query)}`);
-      if (response.ok) {
-        const data = await response.json();
-        setConditionSuggestions(data.suggestions || []);
-      }
+      const response = await apiClient.get(`/trials/conditions/autocomplete?q=${encodeURIComponent(query)}`);
+      setConditionSuggestions(response.data.suggestions || []);
     } catch (error) {
       console.error('Autocomplete error:', error);
     }

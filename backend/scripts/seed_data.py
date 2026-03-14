@@ -147,7 +147,6 @@ class SeedDataGenerator:
                 target_enrollment=random.randint(50, 500),
                 keywords=self._generate_keywords(condition),
                 source_url=f"http://ctri.nic.in/Clinicaltrials/pmaindet2.php?trialid={ctri_id}",
-                last_updated_source=date.today()
             )
             
             trials.append(trial)

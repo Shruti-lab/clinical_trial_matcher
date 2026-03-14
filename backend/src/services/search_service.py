@@ -111,7 +111,7 @@ class TrialSearchService:
             for search_term in all_terms:
                 term_conditions.extend([
                     ClinicalTrial.title.ilike(f"%{search_term}%"),
-                    ClinicalTrial.condition.ilike(f"%{search_term}%"),
+                    ClinicalTrial.condition_name.ilike(f"%{search_term}%"),
                     ClinicalTrial.description.ilike(f"%{search_term}%"),
                     ClinicalTrial.primary_objective.ilike(f"%{search_term}%")
                 ])
@@ -214,8 +214,8 @@ class TrialSearchService:
                 return []
             
             # Search in conditions
-            conditions = db.query(ClinicalTrial.condition).filter(
-                ClinicalTrial.condition.ilike(f"%{query}%")
+            conditions = db.query(ClinicalTrial.condition_name).filter(
+                ClinicalTrial.condition_name.ilike(f"%{query}%")
             ).distinct().limit(limit * 2).all()  # Get more to filter
             
             # Extract unique conditions

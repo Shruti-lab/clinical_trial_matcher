@@ -8,22 +8,22 @@ from enum import Enum
 
 class TrialPhaseEnum(str, Enum):
     """Trial phase enumeration for API."""
-    PHASE_I = "I"
-    PHASE_II = "II"
-    PHASE_III = "III"
-    PHASE_IV = "IV"
+    PHASE_I = "Phase 1"
+    PHASE_II = "Phase 2"
+    PHASE_III = "Phase 3"
+    PHASE_IV = "Phase 4"
     NOT_APPLICABLE = "N/A"
 
 
 class TrialStatusEnum(str, Enum):
     """Trial status enumeration for API."""
-    RECRUITING = "recruiting"
+    RECRUITING = "Open to Recruitment"
     ACTIVE = "active"
-    COMPLETED = "completed"
+    COMPLETED = "Completed"
     SUSPENDED = "suspended"
     TERMINATED = "terminated"
     WITHDRAWN = "withdrawn"
-
+    OTHER = "Publication Details"
 
 class TrialContactInfo(BaseModel):
     """Contact information for a clinical trial."""
@@ -56,7 +56,7 @@ class TrialResponse(BaseModel):
     id: str
     ctri_id: str
     title: str
-    condition: str
+    condition_name: str
     phase: TrialPhaseEnum
     status: TrialStatusEnum
     location: str
@@ -77,7 +77,7 @@ class TrialDetailResponse(BaseModel):
     id: str
     ctri_id: str
     title: str
-    condition: str
+    condition_name: str
     phase: TrialPhaseEnum
     status: TrialStatusEnum
     
@@ -117,9 +117,8 @@ class TrialDetailResponse(BaseModel):
     target_enrollment: Optional[int] = None
     
     # Metadata
-    keywords: Optional[List[str]] = None
+    keywords: Optional[str] = None
     source_url: Optional[str] = None
-    last_updated_source: Optional[date] = None
     
     # Timestamps
     created_at: datetime

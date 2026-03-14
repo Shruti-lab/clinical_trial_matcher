@@ -232,7 +232,7 @@ class TrialGenerator:
             id=str(uuid4()),
             ctri_id=ctri_id,
             title=trial_title,
-            condition=condition,
+            condition_name=condition,
             phase=phase,
             status=status,
             description=description,
@@ -258,9 +258,8 @@ class TrialGenerator:
             study_type=self._get_study_type(condition, phase),
             intervention_type=self._get_intervention_type(condition, category),
             target_enrollment=target_enrollment,
-            keywords=self._generate_comprehensive_keywords(condition, category),
+            keywords=', '.join(self._generate_comprehensive_keywords(condition, category)),
             source_url=f"http://ctri.nic.in/Clinicaltrials/pmaindet2.php?trialid={ctri_id}",
-            last_updated_source=date.today()
         )
 
     def _generate_detailed_title(self, condition: str, phase: TrialPhase, category: str) -> str:

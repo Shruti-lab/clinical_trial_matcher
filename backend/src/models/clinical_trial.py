@@ -14,21 +14,22 @@ if TYPE_CHECKING:
 
 class TrialPhase(enum.Enum):
     """Clinical trial phase enumeration."""
-    PHASE_I = "I"
-    PHASE_II = "II"
-    PHASE_III = "III"
-    PHASE_IV = "IV"
+    PHASE_I = "Phase 1"
+    PHASE_II = "Phase 2"
+    PHASE_III = "Phase 3"
+    PHASE_IV = "Phase 4"
     NOT_APPLICABLE = "N/A"
 
 
 class TrialStatus(enum.Enum):
     """Clinical trial status enumeration."""
-    RECRUITING = "recruiting"
+    RECRUITING = "Open to Recruitment"
     ACTIVE = "active"
-    COMPLETED = "completed"
+    COMPLETED = "Completed"
     SUSPENDED = "suspended"
     TERMINATED = "terminated"
     WITHDRAWN = "withdrawn"
+    OTHER = "Publication Details"
 
 
 class ClinicalTrial(Base, UUIDMixin, TimestampMixin):
@@ -41,9 +42,9 @@ class ClinicalTrial(Base, UUIDMixin, TimestampMixin):
     
     # Basic trial information
     title: Mapped[str] = mapped_column(String(500), nullable=False)
-    condition: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
-    phase: Mapped[TrialPhase] = mapped_column(Enum(TrialPhase), nullable=False, index=True)
-    status: Mapped[TrialStatus] = mapped_column(Enum(TrialStatus), nullable=False, index=True)
+    condition_name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    phase: Mapped[TrialPhase] = mapped_column(Enum(TrialPhase, values_callable=lambda x: [e.value for e in x]), nullable=False, index=True)
+    status: Mapped[TrialStatus] = mapped_column(Enum(TrialStatus, values_callable=lambda x: [e.value for e in x]), nullable=False, index=True)
     
     # Detailed description
     description: Mapped[str] = mapped_column(Text, nullable=True)
@@ -86,20 +87,19 @@ class ClinicalTrial(Base, UUIDMixin, TimestampMixin):
     estimated_completion: Mapped[Optional[date]] = mapped_column(Date, nullable=True, index=True)
     
     # Study design
-    study_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    study_type: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     intervention_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     target_enrollment: Mapped[Optional[int]] = mapped_column(nullable=True)
     
     # Additional metadata
-    keywords: Mapped[Optional[List[str]]] = mapped_column(
-        JSON, 
+    keywords: Mapped[Optional[str]] = mapped_column(
+        Text, 
         nullable=True,
-        comment="Keywords for search and matching"
+        comment="Keywords for search and matching (stored as text)"
     )
     
     # Data source tracking
     source_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
-    last_updated_source: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     
     # Relationships
     matches: Mapped[List["Match"]] = relationship(
@@ -111,7 +111,7 @@ class ClinicalTrial(Base, UUIDMixin, TimestampMixin):
     # Comprehensive indexes for search and filtering
     __table_args__ = (
         Index('idx_trial_ctri_id', 'ctri_id'),
-        Index('idx_trial_condition', 'condition'),
+        Index('idx_trial_condition', 'condition_name'),
         Index('idx_trial_phase', 'phase'),
         Index('idx_trial_status', 'status'),
         Index('idx_trial_location', 'location'),
@@ -124,10 +124,10 @@ class ClinicalTrial(Base, UUIDMixin, TimestampMixin):
         Index('idx_trial_sponsor', 'sponsor'),
         Index('idx_trial_updated_at', 'updated_at'),
         # Composite indexes for common query patterns
-        Index('idx_trial_status_condition', 'status', 'condition'),
+        Index('idx_trial_status_condition', 'status', 'condition_name'),
         Index('idx_trial_phase_status', 'phase', 'status'),
         Index('idx_trial_location_status', 'location', 'status'),
     )
     
     def __repr__(self) -> str:
-        return f"<ClinicalTrial(id={self.id}, ctri_id={self.ctri_id}, condition={self.condition})>"
+        return f"<ClinicalTrial(id={self.id}, ctri_id={self.ctri_id}, condition_name={self.condition_name})>"
